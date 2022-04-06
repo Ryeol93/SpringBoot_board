@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>check in</title>
+</head>
+<body>
+    <form action="" name="checkIn">
+        <div>
+            이름 <input type="text" name="name">
+        </div>
+        <div>
+            <input type="button" id="getToWork" value="출근하기">
+            <input type="button" id="leaveWork" value="퇴근하기">
+        </div>
+    </form>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let form = document.checkIn;
+
+    $("#getToWork").on("click", function(){
+        $(form).attr("action", "/ex/getToWork");
+        $(form).submit();
+    });
+
+    $("#leaveWork").on("click", function(){
+        $(form).attr("action", "/ex/leaveWork");
+        $(form).submit();
+    });
+</script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
