@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Board</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="/css/main.css" type="text/css"/>
+    <style>
+        @media (max-width: 680px) {
+            .writer {display: none;}
+            .regDate {display: none;}
+            .updateDate {display: none;}
+        }
+    </style>
+</head>
+<body class="is-preload">
+<!-- Main -->
+<div id="main">
+    <div class="wrapper">
+        <div class="inner">
+
+            <!-- Elements -->
+            <header class="major">
+                <h1>Board</h1>
+                <p>게시판 목록</p>
+            </header>
+            <!-- Table -->
+            <h3><a href="/board/register" class="button small">글 등록</a></h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr class="tHead">
+                        <th class="bno">번호</th>
+                        <th class="title">제목</th>
+                        <th class="writer">작성자</th>
+                        <th class="regDate">작성일</th>
+                        <th class="updateDate">수정일</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="board:${list}">
+                        <tr class="tBody" th:object="${board}">
+                            <td class="bno" th:text="*{bno}"></td>
+                            <td class="title"><a th:text="*{title}" th:href="@{/board/read(bno=*{bno})}"></a></td>
+                            <td class="writer" th:text="*{writer}"></td>
+                            <td class="regDate" th:text="*{regdate}"></td>
+                            <td class="updateDate" th:text="*{updateDate}"></td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+                <!--페이징 처리 진행-->
+                <div th:object="${pageDTO}">
+                    <div style="text-align: center">
+                        <!--
+                            each문에서 시작값과 끝값을 직접 정하고 싶을 때에는 numbers 객체를 사용한다.
+                            타임리프에서 미리 만들어놓은 필드를 사용할 때 #을 붙여주고,
+                            numbers 안에 있는 sequence()를 통해 원하는 반복횟수를 결정할 수 있다.
+                            th:each="변수명:${#numbers.sequence(시작값, 끝값)"
+
+                            th:if문에 조건식을 작성하면 조건식이 참일 경우 해당 태그가 출력된다.
+                            만약 조건식이 참이 아닐 때를 처리해야 한다면 th:unless를 사용하여 if의 조건식과 동일하게 설정해준다.
+                        -->
+                        <a class="changePage" th:if="*{prev}" th:href="*{startPage - 1}"><code>&lt;</code></a>
+                        <th:block th:each="num:${#numbers.sequence(pageDTO.getStartPage(), pageDTO.getEndPage())}">
+                            <!--이전 버튼-->
+                            <code th:if="${pageDTO.criteria.getPageNum() == num}" th:text="${num}"></code>
+                            <a class="changePage" th:unless="${pageDTO.criteria.getPageNum() == num}" th:href="${num}">
+                                <code th:text="${num}"></code>
+                            </a>
+                            <!--다음 버튼-->
+                        </th:block>
+                        <a class="changePage" th:if="*{next}" th:href="*{endPage + 1}"><code>&gt;</code></a>
+                    </div>
+                    <!--th:object는 부모 태그의 object에서 먼저 mapping을 해준다. 따라서 *가 아닌 $로 사용한다.-->
+                    <form action="/board/list" th:object="${criteria}" name="pageForm">
+                        <input type="hidden" th:field="*{pageNum}">
+                        <input type="hidden" th:field="*{amount}">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="/js/jquery.min.js"></script>
+<script src="/js/jquery.dropotron.min.js"></script>
+<script src="/js/browser.min.js"></script>
+<script src="/js/breakpoints.min.js"></script>
+<script src="/js/util.js"></script>
+<script src="/js/main.js"></script>
+</body>
+<script>
+    $(document).ready(function(){
+        let bno = [[${bno}]];
+        if(bno == null){
+            return;
+        }
+        alert("게시글 " + bno + "번이 등록되었습니다.");
+    })
+
+    $("a.changePage").click(function(e){
+        e.preventDefault();
+        $(pageForm).find("input[name='pageNum']").val($(this).attr("href"));
+        $(pageForm).submit();
+    })
+</script>
+</html>
