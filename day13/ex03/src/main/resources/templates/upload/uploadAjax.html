@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>파일 업로드</title>
+</head>
+<body>
+<div>
+    <input type="file" name="uploadFile" multiple>
+</div>
+<button id="uploadBtn">upload</button>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        let regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
+        let maxSize = 1024 * 1024 * 40;
+
+        function checkFile(fileName, fileSize){
+            if(regex.test(fileName)){
+                alert("업로드할 수 없는 파일의 형식입니다.");
+                return false;
+            }
+            if(fileSize > maxSize){
+                alert("파일 사이즈 초과");
+                return false;
+            }
+            return true;
+        }
+
+        $("button#uploadBtn").click(function(e){
+            let inputFile = $("input[name='uploadFile']");
+            let files = inputFile[0].files;
+            let formData = new FormData();
+
+            for(let i = 0; i < files.length; i++){
+                if(!checkFile(files[i].name, files[i].size)){
+                    continue;
+                }
+                formData.append("uploadFile", files[i]);
+            }
+
+            $.ajax({
+                url: "uploadAjaxAction",
+                data: formData,
+                type: "POST",
+                // 현재 설정된 헤더 설정을 기본 방식으로 변경하지 못하도록 false로 설정
+                processData: false,
+                contentType: false,
+                success: function(result){
+                    console.log(result);
+                }
+            });
+
+        });
+    });
+</script>
+</html>
