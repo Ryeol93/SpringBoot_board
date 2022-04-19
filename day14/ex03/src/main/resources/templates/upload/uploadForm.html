@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>파일 업로드</title>
+</head>
+<body>
+<form action="/upload/uploadFormAction" method="post" enctype="multipart/form-data">
+<!-- multiple을 써주면 여러개를 한번에 담아서 갈 수 있다.-->
+    <input type="file" name="uploadFile" multiple>
+    <button>Submit</button>
+</form>
+</body>
+</html>
